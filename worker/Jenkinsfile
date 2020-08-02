@@ -9,6 +9,7 @@ pipeline {
                 changeset '**/worker/**'
             }
             steps {
+                slackSend channel: "#jenkins", message: "Build started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
                 echo "Compiling work app"
                 dir('worker') {
                     sh 'mvn compile'
