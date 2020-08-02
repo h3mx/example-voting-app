@@ -5,7 +5,11 @@ pipeline {
     }
     stages {
         stage('build') {
+            when {
+                changeset '**/worker/**'
+            }
             steps {
+                slackSend channel: "#jenkins", message: "Build started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
                 echo "Compiling work app"
                 dir('worker') {
                     sh 'mvn compile'
@@ -13,16 +17,29 @@ pipeline {
             }
         }
         stage('test') {
+            when {
+                changeset '**/worker/**'
+            }
             steps {
                 echo 'Running unit tests on work app'
-                sleep 9
+                dir('worker') {
+                    sh 'mvn clean test'
+
+                }
             }
         }
 
         stage('package') {
+            when {
+                branch 'master'
+                changeset '**/worker/**'
+            }
             steps {
                 echo 'Packaging worker app'
-                sleep 5
+                dir('worker') {
+                    sh 'mvn package -DskipTests'
+                    archiveArtifacts artifacts: 'worker/target/*.jar', fingerprint: true
+                }
             }
         }
     }
@@ -30,6 +47,12 @@ pipeline {
     post {
         always {
             echo 'Buil pipeline for worker is complete'
+        }
+        failure {
+            slackSend channel: "#jenkins", message: "Build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        success {
+            slackSend channel: "#jenkins", message: "Build succeeded - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         }
     }
 }
