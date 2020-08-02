@@ -31,11 +31,10 @@ pipeline {
             }
         }
     }
-}
 
-post {
-    always {
-        echo 'Buil pipeline for worker is complete'
+    post {
+        always {
+            echo 'Buil pipeline for worker is complete'
+        }
     }
-}
 }
