@@ -2,6 +2,9 @@ pipeline {
     agent any
     stages {
         stage('build') {
+            when {
+                changeset '**/result/**'
+            }
             steps {
                 echo 'Building npm application'
                 dir('result') {
@@ -12,6 +15,9 @@ pipeline {
             }
         }
         stage('test') {
+            when {
+                changeset '**/result/**'
+            }
             steps {
                 echo 'Testing npm application'
                 dir('result') {
@@ -25,6 +31,12 @@ pipeline {
     post {
         always {
             echo 'Building and testing npm application succesfully'
+        }
+        failure {
+            slackSend channel: "#jenkins", message: "Build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        success {
+            slackSend channel: "#jenkins", message: "Build succeeded - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
         }
     }
 }
