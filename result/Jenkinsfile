@@ -5,7 +5,9 @@ pipeline {
             steps {
                 echo 'Building npm application'
                 dir('result') {
-                    sh 'npm install'
+                    nodejs(nodeJSInstallationName: 'NodeJS 8.9.0') {
+                        sh 'npm install'
+                    }
                 }
             }
         }
@@ -13,7 +15,9 @@ pipeline {
             steps {
                 echo 'Testing npm application'
                 dir('result') {
-                    sh 'npm test'
+                    nodejs(nodeJSInstallationName: 'NodeJS 8.9.0') {
+                        sh 'npm test'
+                    }
                 }
             }
         }
