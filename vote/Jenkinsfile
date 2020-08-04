@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:2.7.16-slim'
+            args '--privileged'
         }
     }
     stages {
@@ -12,8 +13,7 @@ pipeline {
             steps {
                 echo 'Building python application'
                 dir('vote') {
-                    sh 'id && cat /etc/passwd'
-                    //sh 'mkdir ~/.local && pip install -r requirements.txt --user'
+                    sh 'pip install -r requirements.txt --user'
                 }
             }
         }
