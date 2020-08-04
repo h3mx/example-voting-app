@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:8.16.0-alpine'
+        }
+    }
     stages {
         stage('build') {
             when {
@@ -8,9 +12,7 @@ pipeline {
             steps {
                 echo 'Building npm application'
                 dir('result') {
-                    nodejs(nodeJSInstallationName: 'NodeJS 8.9.0') {
-                        sh 'npm install'
-                    }
+                    sh 'npm install'
                 }
             }
         }
@@ -21,9 +23,7 @@ pipeline {
             steps {
                 echo 'Testing npm application'
                 dir('result') {
-                    nodejs(nodeJSInstallationName: 'NodeJS 8.9.0') {
-                        sh 'npm test'
-                    }
+                    sh 'npm test'
                 }
             }
         }
