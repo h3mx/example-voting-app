@@ -30,7 +30,7 @@ pipeline {
     }
     post {
         always {
-            echo 'Building and testing python application succesfully'
+            echo 'Building and testing python app succesfully'
         }
         failure {
             slackSend channel: "#jenkins", message: "Build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
