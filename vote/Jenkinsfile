@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo 'Building python application'
                 dir('vote') {
-                    sh 'pip install -r requirements.txt --user'
+                    sh 'pip install -r requirements.txt'
                 }
             }
         }
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 echo 'Testing python application'
                 dir('vote/tests') {
-                    sh 'nose'
+                    sh 'nosetests -v'
                 }
             }
         }
