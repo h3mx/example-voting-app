@@ -12,7 +12,8 @@ pipeline {
             steps {
                 echo 'Building python application'
                 dir('vote') {
-                    sh 'mkdir ~/.local && pip install -r requirements.txt --user'
+                    sh 'id'
+                    //sh 'mkdir ~/.local && pip install -r requirements.txt --user'
                 }
             }
         }
