@@ -1,0 +1,42 @@
+pipeline {
+    agent {
+        docker {
+            image 'python:2.7.16-slim'
+        }
+    }
+    stages {
+        stage('build') {
+            when {
+                changeset '**/vote/**'
+            }
+            steps {
+                echo 'Building python application'
+                dir('vote') {
+                    sh 'pip install -r requirements.txt'
+                }
+            }
+        }
+        stage('test') {
+            when {
+                changeset '**/vote/**'
+            }
+            steps {
+                echo 'Testing python application'
+                dir('vote') {
+                    sh 'nosetests -v'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Building and testing python application succesfully'
+        }
+        failure {
+            slackSend channel: "#jenkins", message: "Build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+        success {
+            slackSend channel: "#jenkins", message: "Build succeeded - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        }
+    }
+}
