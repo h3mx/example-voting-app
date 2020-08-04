@@ -23,8 +23,8 @@ pipeline {
             }
             steps {
                 echo 'Testing python application'
-                dir('vote') {
-                    sh 'nosetests -v'
+                dir('vote/tests') {
+                    sh 'nose'
                 }
             }
         }
