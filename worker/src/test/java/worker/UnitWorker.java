@@ -26,4 +26,8 @@ class UnitWorker {
     void sample5() {
 
     }
+    @Test
+    void sample6() {
+
+    }
 }
