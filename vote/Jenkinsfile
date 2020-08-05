@@ -1,36 +1,37 @@
 pipeline {
     agent {
         docker {
-            image 'node:8.16.0-alpine'
+            image 'python:2.7.16-slim'
+            args '--user root'
         }
     }
     stages {
         stage('build') {
             when {
-                changeset '**/result/**'
+                changeset '**/vote/**'
             }
             steps {
-                echo 'Building npm application'
-                dir('result') {
-                    sh 'npm install'
+                echo 'Building python application'
+                dir('vote') {
+                    sh 'pip install -r requirements.txt'
                 }
             }
         }
         stage('test') {
             when {
-                changeset '**/result/**'
+                changeset '**/vote/**'
             }
             steps {
-                echo 'Testing npm application'
-                dir('result') {
-                    sh 'npm test'
+                echo 'Testing python application'
+                dir('vote') {
+                    sh 'nosetests -v'
                 }
             }
         }
     }
     post {
         always {
-            echo 'Building and testing npm application succesfully'
+            echo 'Building and testing python app succesfully'
         }
         failure {
             slackSend channel: "#jenkins", message: "Build failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
