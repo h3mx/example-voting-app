@@ -66,7 +66,7 @@ pipeline {
             steps {
                 echo 'Packaging worker app with docker'
 		script {
-		withDockerRegistry(credentialsId: 'gabrielonjas', url: 'https://index.docker.io/v1') {
+		withDockerRegistry(credentialsId: 'gabrielonjas', url: 'https://index.docker.io') {
 		def workerImage = docker.build("galtamirano/worker:v${env.BUILD_ID}","./worker")
 		workerImage.push()
 		workerImage.push("${env.BRANCH_NAME}")
