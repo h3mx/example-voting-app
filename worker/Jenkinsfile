@@ -1,12 +1,13 @@
 pipeline {
+    agent none
+    stages {
+        stage('build') {
     agent {
         docker {
             image 'maven:3.6.1-jdk-8-alpine'
             args '-v $HOME/.m2:/root/.m2'
         }
     }
-    stages {
-        stage('build') {
             when {
                 changeset '**/worker/**'
             }
@@ -19,6 +20,12 @@ pipeline {
             }
         }
         stage('test') {
+    agent {
+        docker {
+            image 'maven:3.6.1-jdk-8-alpine'
+            args '-v $HOME/.m2:/root/.m2'
+        }
+    }
             when {
                 changeset '**/worker/**'
             }
@@ -32,6 +39,12 @@ pipeline {
         }
 
         stage('package') {
+    agent {
+        docker {
+            image 'maven:3.6.1-jdk-8-alpine'
+            args '-v $HOME/.m2:/root/.m2'
+        }
+    }
             when {
                 branch 'master'
                 changeset '**/worker/**'
@@ -46,14 +59,15 @@ pipeline {
         }
 
         stage('docker-package') {
+	agent any
             when {
-                branch 'master'
                 changeset '**/worker/**'
+		branch 'master'
             }
             steps {
                 echo 'Packaging worker app with docker'
 		script {
-		withDockerRegistry(credentialsId: 'gabrielonjas', url: 'https://index.docker.io/v1') {
+		withDockerRegistry(credentialsId: 'gabrielonjas', url: 'https://index.docker.io/v1/') {
 		def workerImage = docker.build("galtamirano/worker:v${env.BUILD_ID}","./worker")
 		workerImage.push()
 		workerImage.push("${env.BRANCH_NAME}")
