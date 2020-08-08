@@ -1,0 +1,27 @@
+vote:
+        image: galtamirano/vote:master
+        ports:
+                - 5000:80
+        links:
+                - redis:redis
+
+worker:
+        image: galtamirano/worker:master
+        links:
+                - redis:redis
+                - db:db
+
+result:
+        image: galtamirano/result:master
+        ports:
+                - 5001:80
+        links:
+                - db:db
+
+redis:
+        image: redis:alpine
+
+db:
+        image: postgres:9.4.26
+        environment:
+                POSTGRES_PASSWORD: hola
