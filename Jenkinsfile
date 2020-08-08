@@ -76,7 +76,7 @@ pipeline {
             }
         }
 
-        stage('resul build') {
+        stage('result build') {
             agent {
                 docker {
                     image 'node:8.16.0-alpine'
