@@ -28,6 +28,5 @@ class UnitWorker {
     }
     @Test
     void sample6() {
-
     }
 }
